@@ -34,6 +34,9 @@ namespace Algorithms_And_Data_Structures_Basics
                     case 4:
                         RootsOfTheEquation();
                         break;
+                    case 5:
+                        Seasons();
+                        break;
                     case 0:
                         Console.WriteLine("Bye-bye!");
                         break;
@@ -51,6 +54,7 @@ namespace Algorithms_And_Data_Structures_Basics
             Console.WriteLine("2 - Task 2. Max of 4");
             Console.WriteLine("3 - Task 3. Swapping System");
             Console.WriteLine("4 - Task 4. Roots of the equation");
+            Console.WriteLine("5 - Task 5. Seasons");
         }
 
         //Ввести вес и рост человека. Рассчитать и вывести индекс массы тела по формуле I=m/(h*h); где
@@ -232,6 +236,40 @@ namespace Algorithms_And_Data_Structures_Basics
             {
                 roots[0] = -equationCoef[1] / (2 * equationCoef[0]);
                 Console.WriteLine($"The root is: {roots[0]:f4}");
+            }
+        }
+
+        //С клавиатуры вводится номер месяца. Требуется определить, к какому времени года он относится.
+        static void Seasons()
+        {
+            int season = 0;
+            do
+            {
+                Console.WriteLine($"Please, enter the number of month");
+                int.TryParse(Console.ReadLine(), out season);
+                if (season < 1 || season > 12)
+                    Console.WriteLine("Invalid value, try again");
+            } while (season < 1 || season > 12);
+            switch (season)
+            {
+                case 1:
+                case 2:
+                case 12:
+                    Console.WriteLine($"This is winter!");
+                    break;
+                case 3:
+                case 4:
+                case 5:
+                    Console.WriteLine("This is spring!");
+                    break;
+                case 6:
+                case 7:
+                case 8:
+                    Console.WriteLine("This is summer!");
+                    break;
+                default:
+                    Console.WriteLine("This is autumn!");
+                    break;
             }
         }
     }
