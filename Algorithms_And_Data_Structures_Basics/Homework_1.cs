@@ -37,6 +37,9 @@ namespace Algorithms_And_Data_Structures_Basics
                     case 5:
                         Seasons();
                         break;
+                    case 6:
+                        AgesRus();
+                        break;
                     case 0:
                         Console.WriteLine("Bye-bye!");
                         break;
@@ -55,6 +58,7 @@ namespace Algorithms_And_Data_Structures_Basics
             Console.WriteLine("3 - Task 3. Swapping System");
             Console.WriteLine("4 - Task 4. Roots of the equation");
             Console.WriteLine("5 - Task 5. Seasons");
+            Console.WriteLine("6 - Task 6. Ages");
         }
 
         //Ввести вес и рост человека. Рассчитать и вывести индекс массы тела по формуле I=m/(h*h); где
@@ -270,6 +274,43 @@ namespace Algorithms_And_Data_Structures_Basics
                 default:
                     Console.WriteLine("This is autumn!");
                     break;
+            }
+        }
+
+        //Ввести возраст человека (от 1 до 150 лет) и вывести его вместе с последующим словом «год», «года» или «лет».
+        static void AgesRus()
+        {
+            int age = 0, calculations = 0;
+            int[] exceptions = { 11, 12, 13, 14 };
+            do
+            {
+                Console.WriteLine($"Пожалуйста, введите Ваш возраст");
+                int.TryParse(Console.ReadLine(), out age);
+                if (age < 1 || age > 151)
+                    Console.WriteLine("Некорректный ввод данных, попробуйте снова");
+            } while (age < 1 || age > 151);
+            if (age > 99)
+                calculations = age % 100;
+            if ((calculations != 0 && exceptions.Contains(calculations)) || 
+                (calculations == 0 && exceptions.Contains(age)))
+                Console.WriteLine($"Отлично, Вам {age} лет!");
+            else
+            {
+                calculations = calculations == 0 ? age % 10 : calculations % 10;
+                switch (calculations)
+                {
+                    case 1:
+                        Console.WriteLine($"{age} год! Отличный возраст!");
+                        break;
+                    case 2:
+                    case 3:
+                    case 4:
+                        Console.WriteLine($"{age} года! Вы как Карлсон, в самом расцвете сил!");
+                        break;
+                    default:
+                        Console.WriteLine($"{age} лет! У Вас скоро день рождения?");
+                        break;
+                }
             }
         }
     }
