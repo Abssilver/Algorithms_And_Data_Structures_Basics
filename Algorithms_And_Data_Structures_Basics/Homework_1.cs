@@ -31,6 +31,9 @@ namespace Algorithms_And_Data_Structures_Basics
                     case 3:
                         SwappingSystem();
                         break;
+                    case 4:
+                        RootsOfTheEquation();
+                        break;
                     case 0:
                         Console.WriteLine("Bye-bye!");
                         break;
@@ -47,7 +50,7 @@ namespace Algorithms_And_Data_Structures_Basics
             Console.WriteLine("1 - Task 1. BMI");
             Console.WriteLine("2 - Task 2. Max of 4");
             Console.WriteLine("3 - Task 3. Swapping System");
-
+            Console.WriteLine("4 - Task 4. Roots of the equation");
         }
 
         //Ввести вес и рост человека. Рассчитать и вывести индекс массы тела по формуле I=m/(h*h); где
@@ -190,6 +193,45 @@ namespace Algorithms_And_Data_Structures_Basics
                 default:
                     SwapWithNoIntermediaryWithMathHelps(ref first, ref second);
                     break;
+            }
+        }
+
+        //Написать программу нахождения корней заданного квадратного уравнения.
+        static void RootsOfTheEquation()
+        {
+            Console.Title = "Roots Of The Equation";
+            Console.WriteLine
+                ("The root finding program welcomes you!\nPlease, provide data for calculations.");
+            //ax^2 + bx + c = 0;
+            double [] equationCoef = new double [3];
+            double[] roots = new double[2];
+            Console.WriteLine("Your equation template is: ax^2 + bx + c = 0\n{0}\n{1}\n{2}",
+                "a - first coefficient",
+                "b - second coefficient",
+                "c - third coefficient");
+            int numOfValues = 0;
+            while (numOfValues < equationCoef.Length)
+            {
+                Console.WriteLine($"Please, enter the {(NumberDisplay)numOfValues} coefficient");
+                bool isValidValue = double.TryParse(Console.ReadLine(), out equationCoef[numOfValues]);
+                if (isValidValue)
+                    numOfValues++;
+                else
+                    Console.WriteLine("Invalid value, try again");
+            }
+            double discriminant = Math.Pow(equationCoef[1], 2) - 4 * equationCoef[0] * equationCoef[2];
+            if (discriminant < 0)
+                Console.WriteLine("No real roots of this equation");
+            else if (discriminant > 0)
+            {
+                roots[0] = (-equationCoef[1] + Math.Sqrt(discriminant)) / (2 * equationCoef[0]);
+                roots[1] = (-equationCoef[1] - Math.Sqrt(discriminant)) / (2 * equationCoef[0]);
+                Console.WriteLine($"Roots are: {roots[0]:f4} || {roots[1]:f4}");
+            }
+            else
+            {
+                roots[0] = -equationCoef[1] / (2 * equationCoef[0]);
+                Console.WriteLine($"The root is: {roots[0]:f4}");
             }
         }
     }
