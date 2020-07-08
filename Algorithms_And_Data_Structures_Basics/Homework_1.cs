@@ -10,7 +10,7 @@ using System.Text.RegularExpressions;
 //Задание выполнил Ремизов Павел
 namespace Algorithms_And_Data_Structures_Basics
 {
-    class Program
+    class Homework_1
     {
         static void Main(string[] args)
         {
@@ -28,6 +28,9 @@ namespace Algorithms_And_Data_Structures_Basics
                     case 2:
                         MaxOfFour();
                         break;
+                    case 3:
+                        SwappingSystem();
+                        break;
                     case 0:
                         Console.WriteLine("Bye-bye!");
                         break;
@@ -43,6 +46,7 @@ namespace Algorithms_And_Data_Structures_Basics
             Console.WriteLine("0 - Exit");
             Console.WriteLine("1 - Task 1. BMI");
             Console.WriteLine("2 - Task 2. Max of 4");
+            Console.WriteLine("3 - Task 3. Swapping System");
 
         }
 
@@ -88,7 +92,6 @@ namespace Algorithms_And_Data_Structures_Basics
             "obese Class III (Very severely obese)";
 
 
-
         //Найти максимальное из четырех чисел. Массивы не использовать
         enum NumberDisplay: byte
         {
@@ -102,7 +105,7 @@ namespace Algorithms_And_Data_Structures_Basics
             Console.Title = "MaxOfFour";
             Console.WriteLine("The program find the max of the four numbers");
             int numOfValues = 0;
-            double maxValue = 0;
+            double maxValue = double.MinValue;
             double userInput;
             while (numOfValues < 4)
             {
@@ -117,6 +120,77 @@ namespace Algorithms_And_Data_Structures_Basics
                     Console.WriteLine("Invalid value, try again");
             }
             Console.WriteLine($"The maximum is: {maxValue}");
+        }
+
+        //Написать программу обмена значениями двух целочисленных переменных:
+        //a. с использованием третьей переменной;
+        //b. * без использования третьей переменной.
+
+        static void SwapValue<T>(ref T a, ref T b)
+        {
+            T temporal = a;
+            a = b;
+            b = temporal;
+        }
+        static void SwapWithNoIntermediary(ref int a, ref int b)
+        {
+            a = a ^ b;
+            b = b ^ a;
+            a = a ^ b;
+        }
+        //Есть вероятность возникновения переполнения
+        static void SwapWithNoIntermediaryWithMathHelps(ref int a, ref int b)
+        {
+            a = a + b;
+            b = a - b;
+            a = a - b;
+        }
+
+        static void SwappingSystem()
+        {
+            Console.Title = "Swapping System";
+            Console.WriteLine
+                ("The Swap program welcomes you!\n" +
+                "To swap any numerical values, please enter them below\n" +
+                "Use space key or comma to split values.");
+            string[] userInput = Regex.Split(Console.ReadLine(), @"\s|[,]\s|[,]");
+            while (userInput.Length != 2)
+            {
+                Console.WriteLine("Sorry, the number of values you entered is exceeded.\nTry again.\n" +
+                    "Please, enter two numerical values.\nUse space key or comma to split values.");
+                userInput = Regex.Split(Console.ReadLine(), @"\s|[,]\s|[,]");
+            }
+            int first, second;
+            bool firstIsNum = int.TryParse(userInput[0], out first);
+            bool secondIsNum = int.TryParse(userInput[1], out second);
+            if (firstIsNum && secondIsNum)
+            {
+                Console.WriteLine($"Your values are {first} and {second}");
+                ChooseAnAlgorithm(ref first, ref second);
+            }
+            else
+                Console.WriteLine("You entered invalid values");
+            Console.WriteLine($"Now your values are {first} and {second}");
+        }
+        private static void ChooseAnAlgorithm(ref int first, ref int second)
+        {
+            Console.WriteLine("Please, choose an algorithm:\n{0},\n{1},\n{2}",
+                "a - for regular swap with buffer",
+                "b - for swap with no intermediary",
+                "c - for swap with no intermediary with helps of math (no recommended)") ;
+            string choice = Console.ReadLine().ToLower();
+            switch (choice)
+            {
+                case "a":
+                    SwapValue(ref first, ref second);
+                    break;
+                case "b":
+                    SwapWithNoIntermediary(ref first, ref second);
+                    break;
+                default:
+                    SwapWithNoIntermediaryWithMathHelps(ref first, ref second);
+                    break;
+            }
         }
     }
 }
