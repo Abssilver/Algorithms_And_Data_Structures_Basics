@@ -40,6 +40,9 @@ namespace Algorithms_And_Data_Structures_Basics
                     case 6:
                         AgesRus();
                         break;
+                    case 7:
+                        ChessColor();
+                        break;
                     case 0:
                         Console.WriteLine("Bye-bye!");
                         break;
@@ -59,6 +62,7 @@ namespace Algorithms_And_Data_Structures_Basics
             Console.WriteLine("4 - Task 4. Roots of the equation");
             Console.WriteLine("5 - Task 5. Seasons");
             Console.WriteLine("6 - Task 6. Ages");
+            Console.WriteLine("7 - Task 7. Chess");
         }
 
         //Ввести вес и рост человека. Рассчитать и вывести индекс массы тела по формуле I=m/(h*h); где
@@ -312,6 +316,52 @@ namespace Algorithms_And_Data_Structures_Basics
                         break;
                 }
             }
+        }
+
+        // С клавиатуры вводятся числовые координаты двух полей шахматной доски (x1,y1,x2,y2). 
+        // Требуется определить, относятся поля к одному цвету или нет
+        static bool IsBlack(int x, int y)
+        {
+            if (x == y)
+                return true;
+            bool isEvenX = x % 2 == 0;
+            bool isEvenY = y % 2 == 0;
+            return isEvenX == isEvenY;
+        }
+        struct Position
+        {
+            public int x, y;
+        }
+        static bool ValidateInt(int toValidate) => toValidate > 0 && toValidate < 9;
+        static void ChessColor()
+        {
+            char[] separators = { ' ', ',' };
+            Position[] positions = new Position[2];
+            int positionsIndex = 0;
+            do
+            {
+                Console.WriteLine($"Please, enter field coordinate (x,y), use space to split values");
+                string[] userInput = Console.ReadLine().Split(separators, StringSplitOptions.RemoveEmptyEntries);
+                if (userInput.Length == 2)
+                {
+                    bool isValidX = int.TryParse(userInput[0], out int x);
+                    bool isValidY = int.TryParse(userInput[1], out int y);
+                    if ((isValidX && isValidY) && ValidateInt(x) && ValidateInt(y))
+                    {
+                        positions[positionsIndex].x = x;
+                        positions[positionsIndex].y = y;
+                        positionsIndex++;
+                    }
+                    else
+                        Console.WriteLine("Invalid value, try again");
+                }
+                else
+                    Console.WriteLine("Invalid value, try again");
+            } while (positionsIndex < 2);
+            if (IsBlack(positions[0].x, positions[0].y) == IsBlack(positions[1].x, positions[1].y))
+                Console.WriteLine("This cells have the same color");
+            else
+                Console.WriteLine("This cells have different color");
         }
     }
 }
