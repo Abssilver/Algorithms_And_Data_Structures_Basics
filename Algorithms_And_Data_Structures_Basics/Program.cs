@@ -25,18 +25,25 @@ namespace Algorithms_And_Data_Structures_Basics
                     case 1:
                         BMI();
                         break;
+                    case 2:
+                        MaxOfFour();
+                        break;
                     case 0:
-                    default:
                         Console.WriteLine("Bye-bye!");
                         break;
+                    default:
+                        Console.WriteLine("Invalid value!");
+                        break;
                 }
-            } while (!validValue);
+            } while ((validValue && selection!=0) || !validValue);
             Console.ReadKey();
         }
         static void Menu()
         {
             Console.WriteLine("0 - Exit");
-            Console.WriteLine("1 - Task 1");
+            Console.WriteLine("1 - Task 1. BMI");
+            Console.WriteLine("2 - Task 2. Max of 4");
+
         }
 
         //Ввести вес и рост человека. Рассчитать и вывести индекс массы тела по формуле I=m/(h*h); где
@@ -64,7 +71,8 @@ namespace Algorithms_And_Data_Structures_Basics
             if (heightIsNum && weightIsNum)
             {
                 bmiValue = weight / Math.Pow(height / 100, 2);
-                Console.WriteLine($"Your BMI is {bmiValue:F1} and this value is considered to be {BMIRecommendation(bmiValue)}");
+                Console.WriteLine
+                    ($"Your BMI is {bmiValue:F1} and this value is considered to be {BMIRecommendation(bmiValue)}");
             }
             else
                 Console.WriteLine("You entered invalid values");
@@ -78,5 +86,37 @@ namespace Algorithms_And_Data_Structures_Basics
             BMIvalue <= 35 ? "obese Class I (Moderately obese)" :
             BMIvalue <= 40 ? "obese Class II (Severely obese)" :
             "obese Class III (Very severely obese)";
+
+
+
+        //Найти максимальное из четырех чисел. Массивы не использовать
+        enum NumberDisplay: byte
+        {
+            first = 0,
+            second = 1,
+            third = 2,
+            fourth = 3
+        }
+        static void MaxOfFour()
+        {
+            Console.Title = "MaxOfFour";
+            Console.WriteLine("The program find the max of the four numbers");
+            int numOfValues = 0;
+            double maxValue = 0;
+            double userInput;
+            while (numOfValues < 4)
+            {
+                Console.WriteLine($"Please, enter the {(NumberDisplay)numOfValues} number");
+                bool isValidValue = double.TryParse(Console.ReadLine(), out userInput);
+                if (isValidValue)
+                {
+                    maxValue = userInput > maxValue ? userInput : maxValue;
+                    numOfValues++;
+                }
+                else
+                    Console.WriteLine("Invalid value, try again");
+            }
+            Console.WriteLine($"The maximum is: {maxValue}");
+        }
     }
 }
