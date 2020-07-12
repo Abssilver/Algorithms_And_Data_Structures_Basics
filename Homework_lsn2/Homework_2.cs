@@ -14,7 +14,7 @@ namespace Homework_lsn2
         {
             Console.WriteLine("Converter");
             Console.WriteLine(Converter(166));
-            Console.WriteLine("Power of a the number");
+            Console.WriteLine("Power of the number");
             Console.WriteLine(PowerA(3, 12));
             Console.WriteLine(PowerB(3, 12));
             Console.WriteLine(PowerC(3, 12));
