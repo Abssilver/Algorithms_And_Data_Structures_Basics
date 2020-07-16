@@ -46,6 +46,9 @@ namespace Homework_lsn3
 
             Console.WriteLine("\nA binary search of element 10:");
             Console.WriteLine($"Index: {BinarySearch(arrayToSort, 10)}");
+
+            Console.WriteLine("\nAn interpolation search of element 10:");
+            Console.WriteLine($"Index: {InterpolationSearch(arrayToSort, 10)}");
             Console.ReadLine();
         }
 
@@ -139,7 +142,7 @@ namespace Homework_lsn3
             int rightLimit = array.Length - 1;
             int leftLimit = 0;
             int middle = 0;
-            while (rightLimit>leftLimit)
+            while (rightLimit>=leftLimit)
             {
                 middle = leftLimit + (rightLimit - leftLimit) / 2;
                 if (array[middle] == element)
@@ -150,6 +153,33 @@ namespace Homework_lsn3
                     rightLimit = middle - 1;
             }
             return array[middle] == element ? middle : -1;
+        }
+
+        static int InterpolationSearch(int[] array, int element)
+        {
+            int rightLimit = array.Length - 1;
+            int leftLimit = 0;
+            int index = 0;
+
+            while (rightLimit >= leftLimit)
+            {
+                if (array[rightLimit] != array[leftLimit])
+                {
+                    index = leftLimit +
+                        ((rightLimit - leftLimit) * (element - array[leftLimit]) / (array[rightLimit] - array[leftLimit]));
+                }
+                else
+                {
+                    index = leftLimit + (rightLimit - leftLimit) / 2;
+                }
+                if (array[index] == element)
+                    break;
+                if (array[index] < element)
+                    leftLimit = index + 1;
+                else
+                    rightLimit = index - 1;
+            }
+            return array[index] == element ? index : -1;
         }
     }
 }
