@@ -23,21 +23,26 @@ namespace Homework_lsn3
 
             int[] arrayToSort = new int[numberOfElements];
             int[] copyArray = new int[numberOfElements];
+            int[] cocktailArray = new int[numberOfElements];
             for (int i = 0; i < arrayToSort.Length; i++)
                 arrayToSort[i] = rnd.Next(-20, 20);
             
             arrayToSort.CopyTo(copyArray, 0);
-
+            arrayToSort.CopyTo(cocktailArray, 0);
             Console.WriteLine("An array before sorting");
             PrintArray(arrayToSort);
 
-            Console.WriteLine("An array after buble sorting");
-            BubbleSort(ref arrayToSort);
+            Console.WriteLine("\nAn array after silly bubble sorting");
+            SillyBubbleSort(ref arrayToSort);
             PrintArray(arrayToSort);
 
-            Console.WriteLine("An array after upgrade buble sorting");
+            Console.WriteLine("\nAn array after upgrade bubble sorting");
             BubbleSortUpgated(ref copyArray);
             PrintArray(copyArray);
+
+            Console.WriteLine("\nAn array after cocktail sorting");
+            CocktailSort(ref cocktailArray);
+            PrintArray(cocktailArray);
             Console.ReadLine();
         }
 
@@ -49,7 +54,7 @@ namespace Homework_lsn3
             Console.WriteLine();
         }
         
-        static void BubbleSort(ref int[] array)
+        static void SillyBubbleSort(ref int[] array)
         {
             int iterations = 0, compares = 0, swaps = 0;
             for (int i = 0; i < array.Length; i++)
@@ -94,6 +99,34 @@ namespace Homework_lsn3
                     break;
             }
             Console.WriteLine($"Iterations: {iterations}, compares: {compares}, swaps: {swaps}");
+        }
+
+        //*Реализовать шейкерную сортировку.
+        static void CocktailSort(ref int[] array)
+        {
+            bool changed = true;
+            int rightLimit = array.Length - 1;
+            int leftLimit = 0;
+            while (changed)
+            {
+                changed = false;
+                for (int i = leftLimit; i < rightLimit; i++)
+                    if (array[i] > array[i + 1])
+                    {
+                        Swap(ref array[i], ref array[i + 1]);
+                        changed = true;
+                    }
+                rightLimit--;
+                for (int j = rightLimit + 1; j > leftLimit; j--)
+                {
+                    if (array[j] < array[j - 1])
+                    {
+                        Swap(ref array[j], ref array[j - 1]);
+                        changed = true;
+                    }
+                }
+                leftLimit++;
+            }       
         }
     }
 }
