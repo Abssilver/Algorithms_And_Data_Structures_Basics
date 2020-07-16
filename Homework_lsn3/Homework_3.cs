@@ -43,6 +43,9 @@ namespace Homework_lsn3
             Console.WriteLine("\nAn array after cocktail sorting");
             CocktailSort(ref cocktailArray);
             PrintArray(cocktailArray);
+
+            Console.WriteLine("\nA binary search of element 10:");
+            Console.WriteLine($"Index: {BinarySearch(arrayToSort, 10)}");
             Console.ReadLine();
         }
 
@@ -127,6 +130,26 @@ namespace Homework_lsn3
                 }
                 leftLimit++;
             }       
+        }
+
+        //Реализовать бинарный алгоритм поиска в виде функции, которой передается отсортированный массив.
+        //Функция возвращает индекс найденного элемента или -1, если элемент не найден.
+        static int BinarySearch(int[] array, int element)
+        {
+            int rightLimit = array.Length - 1;
+            int leftLimit = 0;
+            int middle = 0;
+            while (rightLimit>leftLimit)
+            {
+                middle = leftLimit + (rightLimit - leftLimit) / 2;
+                if (array[middle] == element)
+                    break;
+                if (array[middle] < element)
+                    leftLimit = middle + 1;
+                else
+                    rightLimit = middle - 1;
+            }
+            return array[middle] == element ? middle : -1;
         }
     }
 }
