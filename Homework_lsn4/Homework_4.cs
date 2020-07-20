@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
@@ -15,6 +16,7 @@ namespace Homework_lsn4
         {
             Routes((8, 8));
             LongestCommonSubsequence();
+            ChessKnight((5, 5));
             Console.ReadLine();
         }
 
@@ -155,5 +157,84 @@ namespace Homework_lsn4
                 DisplaySubsequence(firstSequenceLength, secondSequenceLength - 1, charIntersection, firstSequence);
             }
         }
+
+        //***Требуется обойти конем шахматную доску размером NxM, 
+        //пройдя через все поля доски по одному разу. 
+        //Здесь алгоритм решения такой же, как в задаче о 8 ферзях. 
+        //Разница только в проверке положения коня.
+        static int[,] chessBoard;
+        struct KnightPosition
+        {
+            public int x;
+            public int y;
+        }
+        static void ChessKnight((int x, int y) size)
+        {
+            chessBoard = new int[size.x, size.y];
+            int move = 1;
+            chessBoard[0, 0] = 1;
+            int result = 
+                MakeMove(chessBoard.GetLength(0) * chessBoard.GetLength(1), move + 1, new KnightPosition() { x = 0, y = 0 });
+            if (result == 1)
+            {
+                Console.WriteLine("ChessKnight Solution:");
+                Display(chessBoard);
+            }
+            else
+                Console.WriteLine("No solution found!");
+        }
+        static int MakeMove(int requiredMoves, int move, KnightPosition currentPosition)
+        {
+            if (move > requiredMoves)
+                return 1;
+            List <KnightPosition> nextMoves = newKnightPosition(currentPosition);
+            for (int i = 0; i < nextMoves.Count; i++)
+            {
+                if (chessBoard[nextMoves[i].x, nextMoves[i].y] == 0)
+                {
+                    chessBoard[nextMoves[i].x, nextMoves[i].y] = move;
+                    if (MakeMove(requiredMoves, move + 1, nextMoves[i]) != 0)
+                    {
+                        return 1;
+                    }
+                    chessBoard[nextMoves[i].x, nextMoves[i].y] = 0;
+                }
+            }
+            return 0;
+        }
+        static List<KnightPosition> newKnightPosition(KnightPosition currentPosition)
+        {
+            List<KnightPosition> avaiblePositions = new List<KnightPosition>();
+            if (currentPosition.x - 2 >= 0)
+            {
+                if (currentPosition.y - 1 >= 0)
+                    avaiblePositions.Add(new KnightPosition { x = currentPosition.x - 2, y = currentPosition.y - 1 });
+                if (currentPosition.y + 1 < chessBoard.GetLength(0))
+                    avaiblePositions.Add(new KnightPosition { x = currentPosition.x - 2, y = currentPosition.y + 1 });
+            }
+            if (currentPosition.x + 2 < chessBoard.GetLength(1))
+            {
+                if (currentPosition.y - 1 >= 0)
+                    avaiblePositions.Add(new KnightPosition { x = currentPosition.x + 2, y = currentPosition.y - 1 });
+                if (currentPosition.y + 1 < chessBoard.GetLength(0))
+                    avaiblePositions.Add(new KnightPosition { x = currentPosition.x + 2, y = currentPosition.y + 1 });
+            }
+            if (currentPosition.y - 2 >= 0)
+            {
+                if (currentPosition.x - 1 >= 0)
+                    avaiblePositions.Add(new KnightPosition { x = currentPosition.x - 1, y = currentPosition.y - 2 });
+                if (currentPosition.x + 1 < chessBoard.GetLength(1))
+                    avaiblePositions.Add(new KnightPosition { x = currentPosition.x + 1, y = currentPosition.y - 2 });
+            }
+            if (currentPosition.y + 2 < chessBoard.GetLength(0))
+            {
+                if (currentPosition.x - 1 >= 0)
+                    avaiblePositions.Add(new KnightPosition { x = currentPosition.x - 1, y = currentPosition.y + 2 });
+                if (currentPosition.x + 1 < chessBoard.GetLength(1))
+                    avaiblePositions.Add(new KnightPosition { x = currentPosition.x + 1, y = currentPosition.y + 2 });
+            }
+            return avaiblePositions;
+        }
+
     }
 }
