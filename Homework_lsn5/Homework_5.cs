@@ -12,6 +12,8 @@ namespace Homework_lsn5
         static void Main(string[] args)
         {
             ConvertToBinary(166);
+            BracketsValidator("[2/{5*(4+7)}]");
+            BracketsValidator("33*{5*[4+7}]");
             Console.ReadLine();
         }
 
@@ -63,6 +65,43 @@ namespace Homework_lsn5
                 }
                 Console.WriteLine();
             }
+        }
+
+        //Написать программу, которая определяет, является ли введенная скобочная последовательность правильной.
+        //Примеры правильных скобочных выражений: (), ([])(), { }(), ([{}]), 
+        //неправильных — )(, ()) ({), (, ])}), ([(]) для скобок [, (, {.
+        //Например: (2+(2*2)) или [2/{5*(4+7)}]
+        static void BracketsValidator(string input)
+        {
+            TStack<char> sequence = new TStack<char>();
+            bool validate = true;
+            char[] openBracketsPull = { '[', '{', '(' };
+            char[] closeBracketsPull = { ']', '}', ')' };
+        
+            for (int i = 0; i < input.Length; i++)
+            {
+                if (openBracketsPull.Contains(input[i]))
+                    sequence.Push(input[i]);
+                else if (closeBracketsPull.Contains(input[i]))
+                {
+                    try
+                    {
+                        char toCompare = sequence.Pop();
+                        if (Array.IndexOf(openBracketsPull, toCompare) != (Array.IndexOf(closeBracketsPull, input[i])))
+                        {
+                            validate = false;
+                            break;
+                        }
+                    }
+                    catch (Exception)
+                    {
+                        validate = false;
+                        break;
+                    }
+                }
+            }
+            Console.WriteLine($"Input: {input}");
+            Console.WriteLine("{0}", validate? "Test passed" : "Test failed");
         }
     }
 }
