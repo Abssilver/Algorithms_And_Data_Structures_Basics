@@ -14,6 +14,7 @@ namespace Homework_lsn5
             ConvertToBinary(166);
             BracketsValidator("[2/{5*(4+7)}]");
             BracketsValidator("33*{5*[4+7}]");
+            ListCopy();
             Console.ReadLine();
         }
 
@@ -102,6 +103,101 @@ namespace Homework_lsn5
             }
             Console.WriteLine($"Input: {input}");
             Console.WriteLine("{0}", validate? "Test passed" : "Test failed");
+        }
+
+        //*Создать функцию, копирующую односвязный список (то есть создающую в памяти копию
+        //односвязного списка без удаления первого списка).
+        static void ListCopy()
+        {
+            LinkedList<int> intList = new LinkedList<int>();
+            intList.Add(1);
+            intList.Add(2);
+            intList.Add(3);
+            intList.Add(4);
+            intList.Add(5);
+            intList.Add(6);
+            intList.Add(7);
+            intList.Add(8);
+            intList.Add(9);
+            intList.Add(10);
+            LinkedList<int> copyList = intList.GetCopy();
+            intList.Remove(8);
+            intList.PrintData();
+            intList.Clear();
+            copyList.PrintData();
+        } 
+        public class LinkedList<T>
+        {
+            TNode<T> _head; 
+            TNode<T> _tail; 
+            int _count;
+
+            public void Add(T element)
+            {
+                TNode<T> next = new TNode<T> { Value = element };
+                if (_head == null)
+                    _head = next;
+                else
+                    _tail.Next = next;
+                _tail = next;
+                _count++;
+            }
+            public bool Remove(T element)
+            {
+                TNode<T> current = _head;
+                TNode<T> previous = null;
+
+                while (current != null)
+                {
+                    if (current.Value.Equals(element))
+                    {
+                        if (previous != null)
+                        {
+                            previous.Next = current.Next;
+                            if (current.Next == null)
+                                _tail = previous;
+                        }
+                        else
+                        {
+                            _head = _head.Next;
+                            if (_head == null)
+                                _tail = null;
+                        }
+                        _count--;
+                        return true;
+                    }
+                    previous = current;
+                    current = current.Next;
+                }
+                return false;
+            }
+            public void Clear()
+            {
+                _head = null;
+                _tail = null;
+                _count = 0;
+            }
+            public LinkedList<T> GetCopy()
+            {
+                LinkedList<T> copyList = new LinkedList<T>();
+                TNode<T> current = _head;
+                while (current != null)
+                {
+                    copyList.Add(current.Value);
+                    current = current.Next;
+                }
+                return copyList;
+            }
+            public void PrintData()
+            {
+                TNode<T> current = _head;
+                while (current != null)
+                {
+                    Console.Write(current.Value + " ");
+                    current = current.Next;
+                }
+                Console.WriteLine();
+            }
         }
     }
 }
