@@ -43,6 +43,9 @@ namespace Algorithms_And_Data_Structures_Basics
                     case 7:
                         ChessColor();
                         break;
+                    case 8:
+                        CubesAndSquares();
+                        break;
                     case 0:
                         Console.WriteLine("Bye-bye!");
                         break;
@@ -63,6 +66,7 @@ namespace Algorithms_And_Data_Structures_Basics
             Console.WriteLine("5 - Task 5. Seasons");
             Console.WriteLine("6 - Task 6. Ages");
             Console.WriteLine("7 - Task 7. Chess");
+            Console.WriteLine("8 - Task 8. Cubes and Squares");
         }
 
         //Ввести вес и рост человека. Рассчитать и вывести индекс массы тела по формуле I=m/(h*h); где
@@ -363,5 +367,98 @@ namespace Algorithms_And_Data_Structures_Basics
             else
                 Console.WriteLine("This cells have different color");
         }
+
+        //Ввести a и b и вывести квадраты и кубы чисел от a до b.
+        static void CubesAndSquares()
+        {
+            char[] separators = { ' ', ',' };
+            int start = 0 , end = 0;
+            int smallestSquare=-1;
+            int smallestCube;
+            bool userCheck = false;
+            do
+            {
+                Console.WriteLine($"Please, enter the interval, use space key to split values");
+                string[] userInput = Console.ReadLine().Split(separators, StringSplitOptions.RemoveEmptyEntries);
+                if (userInput.Length == 2)
+                {
+                    bool isValidStart = int.TryParse(userInput[0], out start);
+                    bool isValidEnd = int.TryParse(userInput[1], out end);
+                    if ((isValidStart && isValidEnd) && ValidateInterval(start, end))
+                        userCheck = true;
+                    else
+                        Console.WriteLine("Invalid value, try again");
+                }
+                else
+                    Console.WriteLine("Invalid value, try again");
+            } while (!userCheck);
+            if (start > 0)
+                smallestSquare = FindSmallestValue(start, 2);
+            else if (start < 0 && end >= 0)
+                smallestSquare = FindSmallestValue(0, 2);
+            smallestCube = FindSmallestValue(start, 3);
+            if (smallestSquare > -1)
+            {
+                Console.WriteLine("Squares are:");
+                while (Math.Pow(smallestSquare, 2) <= end)
+                {
+                    if (Math.Pow(smallestSquare, 2) >= start)
+                        Console.WriteLine(smallestSquare++);
+                    else
+                        smallestSquare++;
+                }
+            }
+            else
+                Console.WriteLine("There is no squares!");
+            Console.WriteLine("Cubes are:");
+            while (Math.Pow(smallestCube, 3) <= end)
+            {
+                if (Math.Pow(smallestCube, 3) >= start)
+                    Console.WriteLine(smallestCube++);
+                else
+                    smallestCube++;
+            }
+        }
+        static bool ValidateInterval(int start, int end) => start < end;
+        static int FindSmallestValue(int start, int power)
+        {
+            //double power = 1.0 / 3;
+            //int smallestCube = Convert.ToInt32(Math.Pow(start, power));
+            int absValue = Math.Abs(start);
+            if (absValue > 1)
+            {
+                bool valueFound = false;
+                int valueToTry = absValue / 2;
+                int doubleSpeedUp = valueToTry;
+                while (!valueFound)
+                {
+                    if (!TryValue(valueToTry, absValue, power))
+                    {
+                        valueToTry /= 2;
+                        doubleSpeedUp = valueToTry / 2;
+                    }
+                    else
+                    {
+                        if (!TryValue(valueToTry + 1, absValue, power))
+                            valueFound = true;
+                        else
+                        {
+                            if (TryValue(valueToTry + doubleSpeedUp, absValue, power))
+                            {
+                                valueToTry += doubleSpeedUp;
+                            }
+                            else
+                            {
+                                doubleSpeedUp /= 2;
+                            }
+                        }
+                    }
+                }
+                return start > 0? valueToTry: -valueToTry;
+            }
+            else
+                return start;
+        }
+        static bool TryValue(int valueToTry, int origin, int power) => Math.Pow(valueToTry, power) <= origin;
     }
 }
