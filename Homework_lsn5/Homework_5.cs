@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 //Задание выполнил Ремизов Павел
@@ -15,6 +16,8 @@ namespace Homework_lsn5
             BracketsValidator("[2/{5*(4+7)}]");
             BracketsValidator("33*{5*[4+7}]");
             ListCopy();
+            ReversePolishNotationAlgorithm("3 + 4 * 2 / ( 1 - 5 ) ^ 2 ^ 3");
+            ReversePolishNotationAlgorithm("5 * 6 + ( 2 - 9 )");
             Console.ReadLine();
         }
 
@@ -38,22 +41,21 @@ namespace Homework_lsn5
         public class TStack<T>
         {
             TNode<T> _head;
-            int _count = 0;
-
+            public int Count { get; private set; } = 0;
             public void Push(T element)
             {
-                TNode<T> next = new TNode<T> { Value = element};
+                TNode<T> next = new TNode<T> { Value = element };
                 next.Next = _head;
                 _head = next;
-                _count++;
+                Count++;
             }
             public T Pop()
             {
-                if (_count == 0)
+                if (Count == 0)
                     throw new ArgumentOutOfRangeException("Stack is empty!");
                 TNode<T> temp = _head;
                 _head = _head.Next;
-                _count--;
+                Count--;
                 return temp.Value;
             }
             public void PrintStackData()
@@ -61,7 +63,7 @@ namespace Homework_lsn5
                 TNode<T> current = _head;
                 while (current != null)
                 {
-                    Console.Write(current.Value); 
+                    Console.Write(current.Value);
                     current = current.Next;
                 }
                 Console.WriteLine();
@@ -78,7 +80,7 @@ namespace Homework_lsn5
             bool validate = true;
             char[] openBracketsPull = { '[', '{', '(' };
             char[] closeBracketsPull = { ']', '}', ')' };
-        
+
             for (int i = 0; i < input.Length; i++)
             {
                 if (openBracketsPull.Contains(input[i]))
@@ -102,7 +104,7 @@ namespace Homework_lsn5
                 }
             }
             Console.WriteLine($"Input: {input}");
-            Console.WriteLine("{0}", validate? "Test passed" : "Test failed");
+            Console.WriteLine("{0}", validate ? "Test passed" : "Test failed");
         }
 
         //*Создать функцию, копирующую односвязный список (то есть создающую в памяти копию
@@ -125,11 +127,11 @@ namespace Homework_lsn5
             intList.PrintData();
             intList.Clear();
             copyList.PrintData();
-        } 
+        }
         public class LinkedList<T>
         {
-            TNode<T> _head; 
-            TNode<T> _tail; 
+            TNode<T> _head;
+            TNode<T> _tail;
             int _count;
 
             public void Add(T element)
@@ -199,5 +201,89 @@ namespace Homework_lsn5
                 Console.WriteLine();
             }
         }
+
+        //*Реализовать алгоритм перевода из инфиксной записи арифметического выражения в постфиксную
+        static void ReversePolishNotationAlgorithm(string input)
+        {
+            Console.WriteLine($"Input: {input}");
+            Console.Write("Result: ");
+            TStack<char> operatorStack = new TStack<char>();
+            bool operatorCheck;
+            char toCheckWith;
+            for (int i = 0; i < input.Length; i++)
+            {
+                operatorCheck = false;
+                if (input[i] == ' ') continue;
+                if (IsOperator(input[i]))
+                {
+                    while (operatorStack.Count > 0 && !operatorCheck)
+                    {
+                        toCheckWith = operatorStack.Pop();
+                        if (input[i] == ')')
+                        {
+                            if (toCheckWith!='(')
+                            {
+                                Console.Write($"{toCheckWith} ");
+                                continue;
+                            }
+                        }
+                        else if (input[i] == '(')
+                        {
+                            operatorStack.Push(toCheckWith);
+                            operatorStack.Push(input[i]);
+                            operatorCheck = true;
+                            continue;
+                        }
+                        if (toCheckWith == '(')
+                        {
+                            operatorCheck = true;
+                            if (input[i] != ')')
+                            {
+                                operatorStack.Push(toCheckWith);
+                                operatorStack.Push(input[i]);
+                            }
+                            continue;
+                        }
+                        operatorCheck = PriorityCheck(input[i], toCheckWith);
+                        if (!operatorCheck)
+                            Console.Write($"{toCheckWith} ");
+                        else
+                        {
+                            operatorStack.Push(toCheckWith);
+                            operatorStack.Push(input[i]);
+                        }
+                    }
+                    if (operatorStack.Count == 0 && input[i]!=')')
+                        operatorStack.Push(input[i]);
+                }
+                else
+                    Console.Write($"{input[i]} ");
+            }
+            while (operatorStack.Count != 0)
+                Console.Write(operatorStack.Pop() + " ");
+            Console.WriteLine();
+        }
+        static bool IsOperator(char toCheck)
+        {
+            char[] operators = { '+', '-', '*', '/', '^' };
+            char[] brackets = { '(', ')' };
+            return operators.Contains(toCheck) || brackets.Contains(toCheck);
+        }
+        static bool PriorityCheck(char toCheck, char checkWith)
+        {
+            Dictionary<char, int> precedence = new Dictionary<char, int>
+            {
+                ['+'] = 2,
+                ['-'] = 2,
+                ['*'] = 3,
+                ['/'] = 3,
+                ['^'] = 4
+            };
+            if (precedence[checkWith] == 4 & precedence[toCheck] == 4)
+                return true;
+            else
+                return precedence[checkWith] < precedence[toCheck];
+        }
     }
 }
+
