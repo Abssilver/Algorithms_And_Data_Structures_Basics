@@ -19,6 +19,7 @@ namespace Homework_lsn5
             ReversePolishNotationAlgorithm("3 + 4 * 2 / ( 1 - 5 ) ^ 2 ^ 3");
             ReversePolishNotationAlgorithm("5 * 6 + ( 2 - 9 )");
             QueueDemonstration();
+            DequeDemonstration();
             Console.ReadLine();
         }
 
@@ -293,14 +294,14 @@ namespace Homework_lsn5
         {
             TQueueArray<int> arrayQueue = new TQueueArray<int>(5);
             arrayQueue.Enqueue(5);//5
-            arrayQueue.Enqueue(4);//54
+            arrayQueue.Enqueue(4);//5 4
             arrayQueue.Dequeue();//4
-            arrayQueue.Enqueue(3);//43
-            arrayQueue.Enqueue(2);//432
-            arrayQueue.Dequeue();//32
+            arrayQueue.Enqueue(3);//4 3
+            arrayQueue.Enqueue(2);//4 3 2
+            arrayQueue.Dequeue();//3 2
             arrayQueue.Dequeue();//2
-            arrayQueue.Enqueue(1);//21
-            arrayQueue.Enqueue(0);//210
+            arrayQueue.Enqueue(1);//2 1
+            arrayQueue.Enqueue(0);//2 1 0
             arrayQueue.PrintAllElements();
             TQueueList<int> listQueue = new TQueueList<int>();
             listQueue.Enqueue(10);//10
@@ -324,7 +325,6 @@ namespace Homework_lsn5
             int _tail = 0;
             int _count = 0;
             TQueueNodeArray<T>[] _elementArray;
-
             public TQueueArray(int size)
             {
                 _elementArray = new TQueueNodeArray<T>[size];
@@ -375,13 +375,11 @@ namespace Homework_lsn5
                 Console.WriteLine();
             }
         }
-
         public class TQueueList<T>
         {
-            TNode<T> _head=null;
-            TNode<T> _tail=null;
+            TNode<T> _head = null;
+            TNode<T> _tail = null;
             int _count = 0;
-
             public void Enqueue(T element)
             {
                 TNode<T> next = new TNode<T> { Value = element };
@@ -389,19 +387,18 @@ namespace Homework_lsn5
                 {
                     _head = next;
                     _head.Next = _tail;
-                    _tail = _head;
                 }
                 else
                 {
                     _tail.Next = next;
-                    _tail = next;
                 }
+                _tail = next;
                 _count++;
             }
             public T Dequeue()
             {
-                if (_count == 0) 
-                    throw new InvalidOperationException();
+                if (_count == 0)
+                    throw new ArgumentOutOfRangeException("The queue is empty");
                 T toReturn = _head.Value;
                 TNode<T> temp = _head.Next;
                 _head = null;
@@ -415,6 +412,119 @@ namespace Homework_lsn5
                 toPrint.Next = _head.Next;
                 Console.Write($"{toPrint.Value} ");
                 while (toPrint.Next!=null)
+                {
+                    toPrint.Value = toPrint.Next.Value;
+                    Console.Write($"{toPrint.Value} ");
+                    toPrint.Next = toPrint.Next.Next;
+                }
+                Console.WriteLine();
+            }
+        }
+
+        //***Реализовать двустороннюю очередь
+        static void DequeDemonstration()
+        {
+            TDeque<int> dequeOfNumbers = new TDeque<int>();
+            dequeOfNumbers.PushBack(5);//5
+            dequeOfNumbers.PushBack(8);//5 8
+            dequeOfNumbers.PopBack();//5
+            dequeOfNumbers.PushFront(4);//4 5
+            dequeOfNumbers.PushFront(2);//2 4 5
+            dequeOfNumbers.PushBack(9);//2 4 5 9
+            dequeOfNumbers.PopFront();//4 5 9
+            dequeOfNumbers.PushFront(6);//6 4 5 9
+            dequeOfNumbers.PopBack();//6 4 5
+            dequeOfNumbers.PushFront(1);//1 6 4 5
+            dequeOfNumbers.PushBack(0);//1 6 4 5 0
+            dequeOfNumbers.PopBack();//1 6 4 5
+            dequeOfNumbers.PushBack(7);//1 6 4 5 7
+            dequeOfNumbers.PrintAllElements();
+
+        }
+        public class DequeTNode<T>
+        {
+            public T Value { get; set; }
+            public DequeTNode<T> Next { get; set; }
+            public DequeTNode<T> Previous { get; set; }
+        }
+        public class TDeque<T>
+        {
+            DequeTNode<T> _head = null;
+            DequeTNode<T> _tail = null;
+            int _count = 0;
+
+            public void PushBack(T element)
+            {
+                DequeTNode<T> next = new DequeTNode<T> { Value = element };
+                if (_head == null)
+                    _head = next;
+                else
+                {
+                    _tail.Next = next;
+                    next.Previous = _tail;
+                }
+                _tail = next;
+                _count++;
+
+            }
+            public void PushFront(T element)
+            {
+                DequeTNode<T> previous = new DequeTNode<T> { Value = element };
+                if (_head == null)
+                {
+                    _head = previous;
+                    _tail = _head;
+                }
+                else
+                {
+                    previous.Next = _head;
+                    _head.Previous = previous;
+                    _head = previous;
+                }
+                _count++;
+            }
+            public T PopBack()
+            {
+                if (_count == 0)
+                    throw new ArgumentOutOfRangeException("The deque is empty");
+                T toReturn = _tail.Value;
+                if (_count == 1)
+                {
+                    _head = null;
+                    _tail = null;
+                }
+                else
+                {
+                    _tail = _tail.Previous;
+                    _tail.Next = null;
+                }
+                _count--;
+                return toReturn;
+            }
+            public T PopFront()
+            {
+                if (_count == 0)
+                    throw new ArgumentOutOfRangeException("The deque is empty");
+                T toReturn = _head.Value;
+                if (_count == 1)
+                {
+                    _head = null;
+                    _tail = null;
+                }
+                else
+                {
+                    _head = _head.Next;
+                    _head.Previous = null;
+                }
+                _count--;
+                return toReturn;
+            }
+            public void PrintAllElements()
+            {
+                DequeTNode<T> toPrint = new DequeTNode<T> { Value = _head.Value };
+                toPrint.Next = _head.Next;
+                Console.Write($"{toPrint.Value} ");
+                while (toPrint.Next != null)
                 {
                     toPrint.Value = toPrint.Next.Value;
                     Console.Write($"{toPrint.Value} ");
