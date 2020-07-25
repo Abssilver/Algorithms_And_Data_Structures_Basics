@@ -18,6 +18,7 @@ namespace Homework_lsn5
             ListCopy();
             ReversePolishNotationAlgorithm("3 + 4 * 2 / ( 1 - 5 ) ^ 2 ^ 3");
             ReversePolishNotationAlgorithm("5 * 6 + ( 2 - 9 )");
+            QueueDemonstration();
             Console.ReadLine();
         }
 
@@ -221,7 +222,7 @@ namespace Homework_lsn5
                         toCheckWith = operatorStack.Pop();
                         if (input[i] == ')')
                         {
-                            if (toCheckWith!='(')
+                            if (toCheckWith != '(')
                             {
                                 Console.Write($"{toCheckWith} ");
                                 continue;
@@ -253,7 +254,7 @@ namespace Homework_lsn5
                             operatorStack.Push(input[i]);
                         }
                     }
-                    if (operatorStack.Count == 0 && input[i]!=')')
+                    if (operatorStack.Count == 0 && input[i] != ')')
                         operatorStack.Push(input[i]);
                 }
                 else
@@ -283,6 +284,144 @@ namespace Homework_lsn5
                 return true;
             else
                 return precedence[checkWith] < precedence[toCheck];
+        }
+
+        //Реализовать очередь:
+        //1. С использованием массива.
+        //2. *С использованием односвязного списка.
+        static void QueueDemonstration()
+        {
+            TQueueArray<int> arrayQueue = new TQueueArray<int>(5);
+            arrayQueue.Enqueue(5);//5
+            arrayQueue.Enqueue(4);//54
+            arrayQueue.Dequeue();//4
+            arrayQueue.Enqueue(3);//43
+            arrayQueue.Enqueue(2);//432
+            arrayQueue.Dequeue();//32
+            arrayQueue.Dequeue();//2
+            arrayQueue.Enqueue(1);//21
+            arrayQueue.Enqueue(0);//210
+            arrayQueue.PrintAllElements();
+            TQueueList<int> listQueue = new TQueueList<int>();
+            listQueue.Enqueue(10);//10
+            listQueue.Enqueue(5);//10 5
+            listQueue.Dequeue();//5
+            listQueue.Enqueue(25);//5 25
+            listQueue.Enqueue(8);//5 25 8
+            listQueue.Dequeue();//25 8
+            listQueue.Enqueue(12);//25 8 12
+            listQueue.Enqueue(8);//25 8 12 8
+            listQueue.Enqueue(25);//25 8 12 8 25
+            listQueue.PrintAllElements();
+        }
+        public class TQueueNodeArray<T>
+        {
+            public T Value { get; set; }
+        }
+        public class TQueueArray<T>
+        {
+            int _head = 0;
+            int _tail = 0;
+            int _count = 0;
+            TQueueNodeArray<T>[] _elementArray;
+
+            public TQueueArray(int size)
+            {
+                _elementArray = new TQueueNodeArray<T>[size];
+            }
+            public void Enqueue(T element)
+            {
+                TQueueNodeArray<T> newElement = new TQueueNodeArray<T>() { Value = element };
+                if (_count == 0)
+                {
+                    _elementArray[_head] = newElement;
+                    _head = 0;
+                    _tail = _head;
+                    _count++;
+                }
+                else
+                {
+                    if (_count + 1 >= _elementArray.Length)
+                        throw new ArgumentOutOfRangeException("The queue is full");
+                    if (++_tail > _elementArray.Length - 1)
+                        _tail = 0;
+                    _elementArray[_tail] = newElement;
+                    _count++;
+                }
+            }
+            public T Dequeue()
+            {
+                if (_count == 0)
+                    throw new ArgumentOutOfRangeException("The queue is empty");
+                T toReturn = _elementArray[_head].Value;
+                _elementArray[_head] = null;
+                if (++_head > _elementArray.Length - 1)
+                    _head = 0;
+                _count--;
+                return toReturn;
+            }
+            public void PrintAllElements()
+            {
+                int head = _head;
+                int tail = _tail;
+                while (head!=tail)
+                {
+                    Console.Write($"{_elementArray[head].Value} ");
+                    if (++head > _elementArray.Length - 1)
+                        head = 0;
+                }
+                if (_elementArray[head] != null)
+                    Console.Write($"{_elementArray[head].Value} ");
+                Console.WriteLine();
+            }
+        }
+
+        public class TQueueList<T>
+        {
+            TNode<T> _head=null;
+            TNode<T> _tail=null;
+            int _count = 0;
+
+            public void Enqueue(T element)
+            {
+                TNode<T> next = new TNode<T> { Value = element };
+                if (_head == null)
+                {
+                    _head = next;
+                    _head.Next = _tail;
+                    _tail = _head;
+                }
+                else
+                {
+                    _tail.Next = next;
+                    _tail = next;
+                }
+                _count++;
+            }
+            public T Dequeue()
+            {
+                if (_count == 0) 
+                    throw new InvalidOperationException();
+                T toReturn = _head.Value;
+                TNode<T> temp = _head.Next;
+                _head = null;
+                _head = temp;
+                _count--;
+                return toReturn;
+            }
+            public void PrintAllElements()
+            {
+                TNode<T> toPrint = new TNode<T> { Value = _head.Value };
+                toPrint.Next = _head.Next;
+                Console.Write($"{toPrint.Value} ");
+                while (toPrint.Next!=null)
+                {
+                    toPrint.Value = toPrint.Next.Value;
+                    Console.Write($"{toPrint.Value} ");
+                    toPrint.Next = toPrint.Next.Next;
+                }
+                Console.WriteLine();
+            }
         }
     }
 }
