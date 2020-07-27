@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -16,6 +17,7 @@ namespace Homework_lsn6
             Console.WriteLine(SimpleHash("How can a clam cram in a clean cream can?"));
             Console.WriteLine(SimpleHash("Six sick hicks nick six slick bricks with picks and sticks."));
             BinarySearchTree(15);
+            StudentDatabase();
             Console.ReadLine();
         }
         //Реализовать простейшую хэш-функцию. 
@@ -209,6 +211,124 @@ namespace Homework_lsn6
                     toReturn.Add(valueToAdd);
                     valuesAdded++;
                 }
+            }
+            return toReturn;
+        }
+
+        //*Разработать базу данных студентов из полей «Имя», «Возраст», «Табельный номер»,
+        //в которой использовать все знания, полученные на уроках.
+        //Считайте данные в двоичное дерево поиска.
+        //Реализуйте поиск по какому-нибудь полю базы данных (возраст, вес).
+        public class StudentVertex
+        {
+            public StudentData Data { get; set; }
+            public StudentVertex Left { get; set; }
+            public StudentVertex Right { get; set; }
+            public StudentVertex Root { get; set; }
+        }
+        public class StudentData
+        {
+            public string Name { get; set; }
+            public byte Age { get; set; }
+            public int ID => Name.ToList().Sum(x => (int)x * Weight / Age);
+            public int Weight { get; set; }
+        }
+        static void StudentDatabase()
+        {
+            StudentData[] studentsDatabase =
+            {
+                new StudentData() { Name = "Andrew", Age = 24, Weight = 88 },
+                new StudentData() { Name = "Jake", Age = 22, Weight = 95 },
+                new StudentData() { Name = "Gabriella", Age = 39, Weight = 55 },
+                new StudentData() { Name = "Evelyn", Age = 26, Weight = 54 },
+                new StudentData() { Name = "Wyatt", Age = 33, Weight = 74 },
+                new StudentData() { Name = "Melissa", Age = 21, Weight = 60 },
+                new StudentData() { Name = "Samantha", Age = 20, Weight = 45 },
+                new StudentData() { Name = "Stephanie", Age = 29, Weight = 58 },
+                new StudentData() { Name = "Jeremiah", Age = 19, Weight = 69 },
+                new StudentData() { Name = "Robert", Age = 36, Weight = 85 }
+            };
+            StudentVertex tree = null;
+            Console.WriteLine("{0,8} | {1,10} | {2,4} | {3,8}", "ID", "Name", "Age", "Weight");
+            foreach (var student in studentsDatabase)
+            {
+                Console.WriteLine($"{student.ID:d8} | {student.Name,10} | {student.Age,4} | {student.Weight, 8}");
+                InsertStudent(ref tree, student);
+            }
+            Console.WriteLine("Searching student of the age of 10...");
+            if (SearchStudentByTheAge(10, tree) != null)
+                Console.WriteLine("Found!");
+            else
+                Console.WriteLine("Not found!");
+            Console.WriteLine("Searching student of the age of 29...");
+            if (SearchStudentByTheAge(29, tree) != null)
+                Console.WriteLine("Found!");
+            else
+                Console.WriteLine("Not found!");
+        }
+        static StudentVertex GetEmptyVertex(StudentData value, StudentVertex root) =>
+            new StudentVertex()
+            {
+                Data = value,
+                Left = null,
+                Right = null,
+                Root = root,
+            };
+        static void InsertStudent(ref StudentVertex toInsert, StudentData data)
+        {
+            StudentVertex tmp = null;
+            if (toInsert == null)
+            {
+                toInsert = GetEmptyVertex(data, null);
+                return;
+            }
+            tmp = toInsert;
+            while (tmp != null)
+            {
+                if (data.Age > tmp.Data.Age)
+                {
+                    if (tmp.Right != null)
+                    {
+                        tmp = tmp.Right;
+                        continue;
+                    }
+                    else
+                    {
+                        tmp.Right = GetEmptyVertex(data, tmp);
+                        return;
+                    }
+                }
+                else if (data.Age < tmp.Data.Age)
+                {
+                    if (tmp.Left != null)
+                    {
+                        tmp = tmp.Left;
+                        continue;
+                    }
+                    else
+                    {
+                        tmp.Left = GetEmptyVertex(data, tmp);
+                        return;
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("Дерево построено неправильно!");
+                    tmp = null;
+                }
+            }
+        }
+        static StudentVertex SearchStudentByTheAge(int Age, StudentVertex compareWith)
+        {
+            StudentVertex toReturn = null;
+            if (compareWith != null)
+            {
+                if (compareWith.Data.Age > Age)
+                    toReturn = SearchStudentByTheAge(Age, compareWith.Left);
+                else if (compareWith.Data.Age < Age)
+                    toReturn = SearchStudentByTheAge(Age, compareWith.Right);
+                else
+                    return compareWith;
             }
             return toReturn;
         }
