@@ -174,10 +174,10 @@ namespace Homework_lsn7
 
             Console.WriteLine("Breadth-FirstSearch:");
             traverse.Enqueue(first);
+            first.Visited = true;
             while (traverse.Count>0)
             {
                 Node step = traverse.Dequeue();
-                step.Visited = true;
                 Console.WriteLine($"Visiting {step.Vertex} vertex.");
                 foreach (var edge in step.Edges)
                     if (!edge.Visited)
