@@ -13,6 +13,7 @@ namespace Homework_lsn7
         static void Main(string[] args)
         {
             ReadFileData("matrix.txt");
+            DepthFirstSearch();
             Console.ReadLine();
         }
 
@@ -71,6 +72,58 @@ namespace Homework_lsn7
             else
             {
                 Console.WriteLine("File does not exist!");
+            }
+        }
+
+        //Написать рекурсивную функцию обхода графа в глубину.
+        class Node
+        {
+            public int Vertex { get; set; }
+            public bool Visited { get; set; }
+            public void AddEdge(Node toAdd) => Edges.Add(toAdd);
+            public List<Node> Edges { get; } = new List<Node>();
+        }
+        static void DepthFirstSearch()
+        {
+            Node first = new Node { Vertex = 1, Visited = false };
+            Node second = new Node { Vertex = 2, Visited = false };
+            Node third = new Node { Vertex = 3, Visited = false };
+            Node fourth = new Node { Vertex = 4, Visited = false };
+            Node fifth = new Node { Vertex = 5, Visited = false };
+            Node sixth = new Node { Vertex = 6, Visited = false };
+            Node seventh = new Node { Vertex = 7, Visited = false };
+            Node eigth = new Node { Vertex = 8, Visited = false };
+
+            first.AddEdge(second);
+            first.AddEdge(fourth);
+            second.AddEdge(first);
+            second.AddEdge(third);
+            second.AddEdge(fourth);
+            third.AddEdge(second);
+            third.AddEdge(fifth);
+            fourth.AddEdge(first);
+            fourth.AddEdge(sixth);
+            fifth.AddEdge(third);
+            fifth.AddEdge(seventh);
+            sixth.AddEdge(fourth);
+            sixth.AddEdge(seventh);
+            sixth.AddEdge(eigth);
+            seventh.AddEdge(fifth);
+            seventh.AddEdge(sixth);
+            eigth.AddEdge(sixth);
+
+            DFS(first);
+        }
+        static void DFS(Node toSearchIn)
+        {
+            if (toSearchIn.Visited)
+                return;
+            else
+            {
+                toSearchIn.Visited = true;
+                Console.WriteLine($"Visiting {toSearchIn.Vertex} vertex.");
+                foreach (var edge in toSearchIn.Edges)
+                    DFS(edge);
             }
         }
     }
