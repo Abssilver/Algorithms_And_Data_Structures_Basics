@@ -13,7 +13,10 @@ namespace Homework_lsn7
         static void Main(string[] args)
         {
             ReadFileData("matrix.txt");
+            Console.WriteLine();
             DepthFirstSearch();
+            Console.WriteLine();
+            BreadthFirstSearch();
             Console.ReadLine();
         }
 
@@ -112,6 +115,13 @@ namespace Homework_lsn7
             seventh.AddEdge(sixth);
             eigth.AddEdge(sixth);
 
+            //      1  - 2 - 3 - 5
+            //      |    |       |
+            //      |    |    8  7
+            //       \   |     \ |
+            //        -  4 - - - 6
+
+            Console.WriteLine("Depth-FirstSearch:");
             DFS(first);
         }
         static void DFS(Node toSearchIn)
@@ -124,6 +134,57 @@ namespace Homework_lsn7
                 Console.WriteLine($"Visiting {toSearchIn.Vertex} vertex.");
                 foreach (var edge in toSearchIn.Edges)
                     DFS(edge);
+            }
+        }
+
+        //Написать функцию обхода графа в ширину.
+        static void BreadthFirstSearch()
+        {
+            Node first = new Node { Vertex = 1, Visited = false };
+            Node second = new Node { Vertex = 2, Visited = false };
+            Node third = new Node { Vertex = 3, Visited = false };
+            Node fourth = new Node { Vertex = 4, Visited = false };
+            Node fifth = new Node { Vertex = 5, Visited = false };
+            Node sixth = new Node { Vertex = 6, Visited = false };
+            Node seventh = new Node { Vertex = 7, Visited = false };
+            Node eigth = new Node { Vertex = 8, Visited = false };
+
+            Queue<Node> traverse = new Queue<Node>();
+
+            first.AddEdge(second);
+            first.AddEdge(third);
+            second.AddEdge(first);
+            second.AddEdge(fourth);
+            third.AddEdge(first);
+            third.AddEdge(fourth);
+            fourth.AddEdge(second);
+            fourth.AddEdge(third);
+            fourth.AddEdge(fifth);
+            fifth.AddEdge(fourth);
+            fifth.AddEdge(sixth);
+            fifth.AddEdge(eigth);
+            sixth.AddEdge(fifth);
+            sixth.AddEdge(seventh);
+            seventh.AddEdge(sixth);
+            eigth.AddEdge(fifth);
+
+            //      1 - 2 - 4 - 5 - 6 - 7
+            //       \     /     \
+            //        3 --        8
+
+            Console.WriteLine("Breadth-FirstSearch:");
+            traverse.Enqueue(first);
+            while (traverse.Count>0)
+            {
+                Node step = traverse.Dequeue();
+                step.Visited = true;
+                Console.WriteLine($"Visiting {step.Vertex} vertex.");
+                foreach (var edge in step.Edges)
+                    if (!edge.Visited)
+                    {
+                        traverse.Enqueue(edge);
+                        edge.Visited = true;
+                    }
             }
         }
     }
