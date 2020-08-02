@@ -13,6 +13,7 @@ namespace Homework_lsn8
         static void Main(string[] args)
         {
             CountingSort(20, 3, 21);
+            QuickSortDemo(20, 3, 21);
             Console.ReadKey();
         }
 
@@ -28,11 +29,7 @@ namespace Homework_lsn8
         static void CountingSort(int numberOfElements, int minValue, int maxValue)
         {
             if (minValue > maxValue)
-            {
-                int temp = maxValue;
-                maxValue = minValue;
-                minValue = maxValue;
-            }
+                Swap(ref minValue, ref maxValue);
             int[] arrayToSort = GenereateArray(numberOfElements, minValue, maxValue);
             int[] entries = new int[maxValue - minValue + 1];
             Console.WriteLine("Input array:");
@@ -56,6 +53,49 @@ namespace Homework_lsn8
             foreach (var element in array)
                 Console.Write($"{element} ");
             Console.WriteLine();
+        }
+
+        //Реализовать быструю сортировку
+        static void QuickSortDemo(int numberOfElements, int minValue, int maxValue)
+        {
+            if (minValue > maxValue)
+                Swap(ref minValue, ref maxValue);
+            int[] arrayToSort = GenereateArray(numberOfElements, minValue, maxValue);
+            Console.WriteLine("Input array:");
+            PrintArray(arrayToSort);
+            QuickSort(arrayToSort, 0, arrayToSort.Length - 1);
+            Console.WriteLine("Sorted array:");
+            PrintArray(arrayToSort);
+        }
+        static void Swap<T>(ref T first, ref T second)
+        {
+            T temp = second;
+            second = first;
+            first = temp;
+        }
+        static void QuickSort(int[] array, int leftIndex, int rightIndex)
+        {
+            int i = leftIndex;
+            int j = rightIndex;
+
+            int middle = array[(i + j) / 2];
+        
+            do
+            {
+                while (array[i] < middle) i++;
+                while (array[j] > middle) j--;
+
+                if (i <= j)
+                {
+                    if (array[i] > array[j])
+                        Swap(ref array[i], ref array[j]);
+                    i++;
+                    j--;
+                }
+            } while (i <= j);
+
+            if (i < rightIndex) QuickSort(array, i, rightIndex);
+            if (leftIndex < j) QuickSort(array, leftIndex, j);
         }
     }
 }
