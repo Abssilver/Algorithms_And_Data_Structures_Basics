@@ -14,6 +14,7 @@ namespace Homework_lsn8
         {
             CountingSort(20, 3, 21);
             QuickSortDemo(20, 3, 21);
+            MergeSortDemo(20, 3, 21);
             Console.ReadKey();
         }
 
@@ -96,6 +97,63 @@ namespace Homework_lsn8
 
             if (i < rightIndex) QuickSort(array, i, rightIndex);
             if (leftIndex < j) QuickSort(array, leftIndex, j);
+        }
+
+        //*Реализовать сортировку слиянием
+        static void MergeSortDemo(int numberOfElements, int minValue, int maxValue)
+        {
+            if (minValue > maxValue)
+                Swap(ref minValue, ref maxValue);
+            int[] arrayToSort = GenereateArray(numberOfElements, minValue, maxValue);
+            Console.WriteLine("Input array:");
+            PrintArray(arrayToSort);
+            MergeSort(arrayToSort, 0, arrayToSort.Length - 1);
+            Console.WriteLine("Sorted array:");
+            PrintArray(arrayToSort);
+        }
+        static void MergeSort(int[] array, int leftIndex, int rightIndex)
+        {
+            if (array.Length > 0)
+            {
+                int nextStep = rightIndex - leftIndex;
+                switch (nextStep)
+                {
+                    case 0:
+                        break;
+                    case 1:   
+                        if (array[leftIndex] > array[rightIndex])
+                            Swap(ref array[leftIndex], ref array[rightIndex]);
+                        break;
+                    default:
+                        MergeSort(array, leftIndex, leftIndex + nextStep / 2);
+                        MergeSort(array, leftIndex + 1 + nextStep / 2, rightIndex);
+                        Merge(array, leftIndex, rightIndex, nextStep/2);
+                        break;
+                }
+            }
+        }
+        static void Merge(int [] array, int leftIndex, int rightIndex, int middle)
+        {
+            int[] firstArray = new int[middle + 1];
+            int firstArrayIndex = 0;
+            int[] secondArray = new int[rightIndex - leftIndex - middle];
+            int secondArrayIndex = 0;
+            for (int i = leftIndex; i < leftIndex + firstArray.Length; i++)
+                firstArray[firstArrayIndex++] = array[i];
+            for (int j = leftIndex + middle + 1; j < leftIndex + middle + 1 + secondArray.Length; j++)
+                secondArray[secondArrayIndex++] = array[j];
+            firstArrayIndex = secondArrayIndex = 0;
+            while (leftIndex <= rightIndex)
+            {
+                if (firstArrayIndex > firstArray.Length - 1)
+                    array[leftIndex++] = secondArray[secondArrayIndex++];
+                else if (secondArrayIndex > secondArray.Length - 1)
+                    array[leftIndex++] = firstArray[firstArrayIndex++];
+                else if (firstArray[firstArrayIndex] <= secondArray[secondArrayIndex])
+                    array[leftIndex++] = firstArray[firstArrayIndex++];
+                else
+                    array[leftIndex++] = secondArray[secondArrayIndex++];
+            }
         }
     }
 }
