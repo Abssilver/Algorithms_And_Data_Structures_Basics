@@ -15,11 +15,12 @@ namespace Homework_lsn8
             CountingSort(20, 3, 21);
             QuickSortDemo(20, 3, 21);
             MergeSortDemo(20, 3, 21);
+            PigeonholeSortDemo(20, 3, 21);
             Console.ReadKey();
         }
 
         //Реализовать сортировку подсчетом.
-        static int [] GenereateArray(int numberOfElements, int minValue, int maxValue)
+        static int[] GenereateArray(int numberOfElements, int minValue, int maxValue)
         {
             Random rnd = new Random();
             int[] toReturn = new int[numberOfElements];
@@ -80,7 +81,7 @@ namespace Homework_lsn8
             int j = rightIndex;
 
             int middle = array[(i + j) / 2];
-        
+
             do
             {
                 while (array[i] < middle) i++;
@@ -120,19 +121,19 @@ namespace Homework_lsn8
                 {
                     case 0:
                         break;
-                    case 1:   
+                    case 1:
                         if (array[leftIndex] > array[rightIndex])
                             Swap(ref array[leftIndex], ref array[rightIndex]);
                         break;
                     default:
                         MergeSort(array, leftIndex, leftIndex + nextStep / 2);
                         MergeSort(array, leftIndex + 1 + nextStep / 2, rightIndex);
-                        Merge(array, leftIndex, rightIndex, nextStep/2);
+                        Merge(array, leftIndex, rightIndex, nextStep / 2);
                         break;
                 }
             }
         }
-        static void Merge(int [] array, int leftIndex, int rightIndex, int middle)
+        static void Merge(int[] array, int leftIndex, int rightIndex, int middle)
         {
             int[] firstArray = new int[middle + 1];
             int firstArrayIndex = 0;
@@ -154,6 +155,63 @@ namespace Homework_lsn8
                 else
                     array[leftIndex++] = secondArray[secondArrayIndex++];
             }
+        }
+
+        //**Реализовать алгоритм сортировки со списком
+        static void PigeonholeSortDemo(int numberOfElements, int minValue, int maxValue)
+        {
+            if (minValue > maxValue)
+                Swap(ref minValue, ref maxValue);
+            Pigeon[] arrayToSort = GeneratePigeons(numberOfElements, minValue, maxValue);
+            Console.WriteLine("Input array:");
+            PrintPigeons(arrayToSort);
+            PigeonholeSort(arrayToSort);
+            Console.WriteLine("Sorted array:");
+            PrintPigeons(arrayToSort);
+        }
+        static void PrintPigeons(Pigeon []pigeons)
+        {
+            foreach (var bird in pigeons)
+                Console.Write($"{bird.Key} ");
+            Console.WriteLine();
+        }
+        static void PigeonholeSort(Pigeon[] array)
+        {
+            int min = int.MaxValue;
+            int max = int.MinValue;
+            for (int i = 0; i < array.Length; i++)
+            {
+                if (array[i].Key < min) min = array[i].Key;
+                if (array[i].Key > max) max = array[i].Key;
+            }
+            List<Pigeon>[] holes = new List<Pigeon>[max - min + 1];
+            for (int i = 0; i < array.Length; i++)
+            {
+                if (holes[array[i].Key - min] == null)
+                    holes[array[i].Key - min] = new List<Pigeon>();
+                holes[array[i].Key - min].Add(array[i]);
+            }
+            int pigeons = 0;
+            for (int i = 0; i < holes.Length; i++)
+            {
+                if (holes[i]!=null)
+                {
+                    holes[i].CopyTo(array, pigeons);
+                    pigeons += holes[i].Count;
+                }
+            }
+        }
+        public class Pigeon
+        {
+            public int Key { get; set; }
+        }
+        static Pigeon[] GeneratePigeons(int numberOfBirds, int minValue, int maxValue)
+        {
+            Random rnd = new Random();
+            Pigeon[] toReturn = new Pigeon[numberOfBirds];
+            for (int i = 0; i < toReturn.Length; i++)
+                toReturn[i] = new Pigeon() { Key = rnd.Next(minValue, maxValue + 1) };
+            return toReturn;
         }
     }
 }
