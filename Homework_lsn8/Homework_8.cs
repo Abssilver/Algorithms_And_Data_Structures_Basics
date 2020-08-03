@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -16,6 +17,10 @@ namespace Homework_lsn8
             QuickSortDemo(20, 3, 21);
             MergeSortDemo(20, 3, 21);
             PigeonholeSortDemo(20, 3, 21);
+            ShellSortDemo(20, 3, 21);
+            HeapSortDemo(20, 2, 21);
+            BubbleSortDemo(20, 2, 21);
+            CocktailSortDemo(1_000_000, 2, 21);
             Console.ReadKey();
         }
 
@@ -65,7 +70,11 @@ namespace Homework_lsn8
             int[] arrayToSort = GenereateArray(numberOfElements, minValue, maxValue);
             Console.WriteLine("Input array:");
             PrintArray(arrayToSort);
+            //Stopwatch watch = new Stopwatch();
+            //watch.Start();
             QuickSort(arrayToSort, 0, arrayToSort.Length - 1);
+            //watch.Stop();
+            //Console.WriteLine(watch.Elapsed);
             Console.WriteLine("Sorted array:");
             PrintArray(arrayToSort);
         }
@@ -108,7 +117,11 @@ namespace Homework_lsn8
             int[] arrayToSort = GenereateArray(numberOfElements, minValue, maxValue);
             Console.WriteLine("Input array:");
             PrintArray(arrayToSort);
+            //Stopwatch watch = new Stopwatch();
+            //watch.Start();
             MergeSort(arrayToSort, 0, arrayToSort.Length - 1);
+            //watch.Stop();
+            //Console.WriteLine(watch.Elapsed);  
             Console.WriteLine("Sorted array:");
             PrintArray(arrayToSort);
         }
@@ -212,6 +225,240 @@ namespace Homework_lsn8
             for (int i = 0; i < toReturn.Length; i++)
                 toReturn[i] = new Pigeon() { Key = rnd.Next(minValue, maxValue + 1) };
             return toReturn;
+        }
+
+        //Проанализировать время работы каждого из вида сортировок для 100, 10000, 1000000 элементов.
+        //Заполнить таблицу.
+
+        //ФИО - Ремизов П.М.
+        //Процессор - Intel(R) Core(TM) i7-8750H CPU @ 2.20GHz
+        //ОС - Windows 10 Pro x64
+        //Среда программирования Microsoft Visual Studio Community 2019 Версия 16.6.2
+        //Название          Время / Кол-во сравнений
+        //QuickSort        00:00:00.0004526 / 100 | 00:00:00.0005727 / 250 | 00:00:00.0004681 / 500 | 00:00:00.0004290 / 1000 | 00:00:00.0018355 / 10_000 | 00:00:00.1096428 / 1_000_000
+        //ShellSort        00:00:00.0005836 / 100 | 00:00:00.0001656 / 250 | 00:00:00.0001976 / 500 | 00:00:00.0002274 / 1000 | 00:00:00.0012768 / 10_000 | 00:00:00.1617529 / 1_000_000
+        //MergeSort        00:00:00.0003854 / 100 | 00:00:00.0004306 / 250 | 00:00:00.0004659 / 500 | 00:00:00.0007755 / 1000 | 00:00:00.0023534 / 10_000 | 00:00:00.3130088 / 1_000_000
+        //HeapSort         00:00:00.0001686 / 100 | 00:00:00.0002893 / 250 | 00:00:00.0003513 / 500 | 00:00:00.0010577 / 1000 | 00:00:00.0097855 / 10_000 | 00:00:01.3664901 / 1_000_000
+        //BubbleSort       00:00:00.0001449 / 100 | 00:00:00.0002140 / 250 | 00:00:00.0006760 / 500 | 00:00:00.0013021 / 1000 | 00:00:00.1391569 / 10_000 | 00:19:02.1271134 / 1_000_000
+        //ShakeSort        00:00:00.0003276 / 100 | 00:00:00.0009077 / 250 | 00:00:00.0016539 / 500 | 00:00:00.0047964 / 1000 | 00:00:00.7689873 / 10_000 | 01:21:00.0000000 / 1_000_000 
+        //                                                                                                                                                  (результат не достоверный, окно выполнения скрипта закрылось)
+        // -----------------------------------------------------------------------------------------
+        // 100              QuickSort | ShellSort | MergeSort | HeapSort | BubbleSort | ShakeSort
+        //QuickSort             1     |   Quick   |   Merge   |   Heap   |   Bubble   |   Quick
+        //ShellSort           Quick   |     1     |   Merge   |   Heap   |   Bubble   |   Shake
+        //MergeSort           Merge   |   Merge   |     1     |   Heap   |   Bubble   |   Shake
+        //HeapSort             Heap   |    Heap   |    Heap   |     1    |   Bubble   |    Heap
+        //BubbleSort         Bubble   |   Bubble  |   Bubble  |  Bubble  |     1      |   Bubble
+        //ShakeSort           Quick   |   Shake   |   Shake   |   Heap   |   Bubble   |     1
+        // -----------------------------------------------------------------------------------------
+        // 10_000           QuickSort | ShellSort | MergeSort | HeapSort | BubbleSort | ShakeSort
+        //QuickSort             1     |   Shell   |   Quick   |   Quick  |    Quick   |   Quick
+        //ShellSort           Shell   |     1     |   Shell   |   Shell  |    Shell   |   Shell
+        //MergeSort           Quick   |   Shell   |     1     |   Merge  |    Merge   |   Merge
+        //HeapSort            Quick   |   Shell   |   Merge   |     1    |     Heap   |    Heap
+        //BubbleSort          Quick   |   Shell   |   Merge   |   Heap   |      1     |   Bubble
+        //ShakeSort           Quick   |   Shell   |   Merge   |   Heap   |   Bubble   |     1
+        // -----------------------------------------------------------------------------------------
+        // 1_000_000        QuickSort | ShellSort | MergeSort | HeapSort | BubbleSort | ShakeSort
+        //QuickSort             1     |   Quick   |   Quick   |  Quick   |    Quick   |   Quick
+        //ShellSort           Quick   |     1     |   Shell   |  Shell   |    Shell   |   Shell
+        //MergeSort           Quick   |   Shell   |     1     |  Merge   |    Merge   |   Merge
+        //HeapSort            Quick   |   Shell   |   Merge   |     1    |     Heap   |    Heap
+        //BubbleSort          Quick   |   Shell   |   Merge   |   Heap   |     1      |   Bubble
+        //ShakeSort           Quick   |   Shell   |   Merge   |   Heap   |   Bubble   |     1
+
+        static void ShellSortDemo(int numberOfElements, int minValue, int maxValue)
+        {
+            if (minValue > maxValue)
+                Swap(ref minValue, ref maxValue);
+            int[] arrayToSort = GenereateArray(numberOfElements, minValue, maxValue);
+            Console.WriteLine("Input array:");
+            PrintArray(arrayToSort);
+            //Stopwatch watch = new Stopwatch();
+            //watch.Start();
+            ShellSort(arrayToSort);
+            //watch.Stop();
+            //Console.WriteLine(watch.Elapsed);
+            Console.WriteLine("Sorted array:");
+            PrintArray(arrayToSort);
+        }
+        //Internet
+        static void ShellSort(int[] array)
+        {
+            int step = array.Length / 2;
+            while (step > 0)
+            {
+                int i, j;
+                for (i = step; i < array.Length; i++)
+                {
+                    int value = array[i];
+                    for (j = i - step; (j >= 0) && (array[j] > value); j -= step)
+                        array[j + step] = array[j];
+                    array[j + step] = value;
+                }
+                step /= 2;
+            }
+        }
+        static void HeapSortDemo(int numberOfElements, int minValue, int maxValue)
+        {
+            if (minValue > maxValue)
+                Swap(ref minValue, ref maxValue);
+            int[] arrayToSort = GenereateArray(numberOfElements, minValue, maxValue);
+            IntComparer comparer = new IntComparer();
+            Heap<int> heap = new Heap<int>(arrayToSort, comparer);
+            heap.BuildMaxHeap();
+            Console.WriteLine("Input array:");
+            PrintArray(arrayToSort);
+            //Stopwatch watch = new Stopwatch();
+            //watch.Start();
+            heap.HeapSort(); // + построение пирамиды
+            //watch.Stop();
+            //Console.WriteLine(watch.Elapsed);
+            Console.WriteLine("Sorted array:");
+            PrintArray(arrayToSort);
+        }
+        //Internet
+        public class Heap<T>
+        {
+            private T[] _array; //массив сортируемых элементов
+            private int heapsize;//число необработанных элементов
+            private IComparer<T> _comparer;
+            public Heap(T[] array, IComparer<T> comparer)
+            {
+                _array = array;
+                heapsize = array.Length;
+                _comparer = comparer;
+            }
+            public void HeapSort()
+            {
+                //BuildMaxHeap();//Построение пирамиды
+                for (int i = _array.Length - 1; i > 0; i--)
+                {
+                    T temp = _array[0];//Переместим текущий максимальный элемент из нулевой позиции в хвост массива
+                    _array[0] = _array[i];
+                    _array[i] = temp;
+
+                    heapsize--;//Уменьшим число необработанных элементов
+                    MaxHeapify(0);//Восстановление свойства пирамиды
+                }
+            }
+
+            private int Parent(int i) { return (i - 1) / 2; }//Индекс родительского узла
+            private int Left(int i) { return 2 * i + 1; }//Индекс левого потомка
+            private int Right(int i) { return 2 * i + 2; }//Индекс правого потомка
+
+            //Метод переупорядочивает элементы пирамиды при условии,
+            //что элемент с индексом i меньше хотя бы одного из своих потомков, нарушая тем самым свойство невозрастающей пирамиды
+            private void MaxHeapify(int i)
+            {
+                int l = Left(i);
+                int r = Right(i);
+                int lagest = i;
+                if (l < heapsize && _comparer.Compare(_array[l], _array[i]) > 0)
+                    lagest = l;
+                if (r < heapsize && _comparer.Compare(_array[r], _array[lagest]) > 0)
+                    lagest = r;
+                if (lagest != i)
+                {
+                    T temp = _array[i];
+                    _array[i] = _array[lagest];
+                    _array[lagest] = temp;
+
+                    MaxHeapify(lagest);
+                }
+            }
+
+            //метод строит невозрастающую пирамиду
+            public void BuildMaxHeap()
+            {
+                int i = (_array.Length - 1) / 2;
+
+                while (i >= 0)
+                {
+                    MaxHeapify(i);
+                    i--;
+                }
+            }
+
+        }
+        public class IntComparer : IComparer<int>
+        {
+            public int Compare(int x, int y) { return x - y; }
+        }
+
+        static void BubbleSortDemo(int numberOfElements, int minValue, int maxValue)
+        {
+            if (minValue > maxValue)
+                Swap(ref minValue, ref maxValue);
+            int[] arrayToSort = GenereateArray(numberOfElements, minValue, maxValue);
+            Console.WriteLine("Input array:");
+            PrintArray(arrayToSort);
+            //Stopwatch watch = new Stopwatch();
+            //watch.Start();
+            BubbleSort(arrayToSort);
+            //watch.Stop();
+            //Console.WriteLine(watch.Elapsed);
+            Console.WriteLine("Sorted array:");
+            PrintArray(arrayToSort);
+        }
+        //Internet
+        static void BubbleSort(int[] array)
+        {
+            for (int i = 0; i < array.Length; i++)
+            {
+                for (int j = i + 1; j < array.Length; j++)
+                {
+                    if (array[j] < array[i])
+                    {
+                        var temp = array[i];
+                        array[i] = array[j];
+                        array[j] = temp;
+                    }
+                }
+            }
+        }
+
+        static void CocktailSortDemo(int numberOfElements, int minValue, int maxValue)
+        {
+            if (minValue > maxValue)
+                Swap(ref minValue, ref maxValue);
+            int[] arrayToSort = GenereateArray(numberOfElements, minValue, maxValue);
+            Console.WriteLine("Input array:");
+            //PrintArray(arrayToSort);
+            Stopwatch watch = new Stopwatch();
+            watch.Start();
+            CocktailSort(arrayToSort);
+            watch.Stop();
+            Console.WriteLine(watch.Elapsed);
+            Console.WriteLine("Sorted array:");
+            //PrintArray(arrayToSort);
+        }
+        //Homework 3
+        static void CocktailSort(int[] array)
+        {
+            bool changed = true;
+            int rightLimit = array.Length - 1;
+            int leftLimit = 0;
+            while (changed)
+            {
+                changed = false;
+                for (int i = leftLimit; i < rightLimit; i++)
+                    if (array[i] > array[i + 1])
+                    {
+                        Swap(ref array[i], ref array[i + 1]);
+                        changed = true;
+                    }
+                rightLimit--;
+                for (int j = rightLimit + 1; j > leftLimit; j--)
+                {
+                    if (array[j] < array[j - 1])
+                    {
+                        Swap(ref array[j], ref array[j - 1]);
+                        changed = true;
+                    }
+                }
+                leftLimit++;
+            }
         }
     }
 }
